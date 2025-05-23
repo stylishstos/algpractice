@@ -6,6 +6,6 @@ function debounce(fn, delay) {
       clearTimeout(timeoutId);
     }
 
-    setTimeout(() => fn.apply(this, args), delay);
+    timeoutId = setTimeout(() => fn.apply(this, args), delay);
   }
 }

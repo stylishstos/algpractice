@@ -1,12 +1,25 @@
 function throttle(fn, delay) {
-  let pending = false;
+  let pending, savedThis, savedArgs;
 
-  return function(...args) {
-    if (pending) return;
+  return function wrapper(...args) {
+    if (pending) {
+      savedArgs = args;
+      savedThis = this;
 
-    pending = true;
+      return;
+    };
+
     fn.apply(this, args);
+    pending = true;
 
-    setTimeout(() => pending = false, delay);
+    setTimeout(() => {
+      pending = false;
+
+      if (savedArgs) {
+        wrapper.apply(savedThis, savedArgs);
+        savedThis = null;
+        savedArgs = null;
+      }
+    }, delay);
   }
 }

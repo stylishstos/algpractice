@@ -85,6 +85,71 @@ class BinaryTree {
         }
     }
 
+    traverseDFSStack(cb, type) {
+        switch (type) {
+            case 'preOrder':
+                return this.preOrderStack(this.root, cb);
+            case 'inOrder':
+                return this.inOrderStack(this.root, cb);
+            default:
+                return this.postOrderStack(this.root, cb);
+        }
+    }
+
+    preOrderStack(node, cb) {
+        const stack = [];
+        let currNode = node, prevNode;
+
+        while(currNode || stack.length) {
+            if (currNode) {
+                cb(currNode);
+                stack.push(currNode);
+                currNode = currNode.left;
+            } else {
+                prevNode = stack.pop();
+                currNode = prevNode.right;
+            }
+        }
+    }
+
+    inOrderStack(node, cb) {
+        const stack = [];
+        let currNode = node, prevNode;
+
+        while(currNode || stack.length) {
+            if (currNode) {
+                stack.push(currNode);
+                currNode = currNode.left;
+            } else {
+                prevNode = stack.pop();
+                cb(prevNode);
+                currNode = prevNode.right;
+            }
+        }
+    }
+
+    postOrderStack(node, cb) {
+        const stack = [];
+        const rightStack = [];
+        let currNode = node;
+
+        while(currNode || stack.length) {
+            if (currNode) {
+                if (currNode.right) {
+                    rightStack.push(currNode.right);
+                }
+                stack.push(currNode);
+                currNode = currNode.left;
+            } else {
+                if (rightStack.length && stack[stack.length - 1].right === rightStack[rightStack.length - 1]) {
+                    currNode = rightStack.pop();
+                } else {
+                    cb(stack.pop());
+                }
+            }
+        }
+    }
+
     traverseBFS(cb) {
         const queue = [this.root];
 
@@ -99,10 +164,21 @@ class BinaryTree {
 }
 
 const tree = new BinaryTree();
-tree.add(8).add(7).add(9).add(5).add(10).add(20).add(6).add(2).add(11);
+tree.add(8).add(5).add(6).add(2).add(10).add(20).add(9);
 
 // console.dir(tree, { depth: null });
+
 // tree.traverseDFS((node) => console.log(node.value), 'preOrder');
+// console.log('-')
+// tree.traverseDFSStack((node) => console.log(node.value), 'preOrder');
+
 // tree.traverseDFS((node) => console.log(node.value), 'inOrder');
+// console.log('-')
+// tree.traverseDFSStack((node) => console.log(node.value), 'inOrder');
+
+
 // tree.traverseDFS((node) => console.log(node.value), 'postOrder');
- tree.traverseBFS((node) => console.log(node.value));
+// console.log('-')
+// tree.traverseDFSStack((node) => console.log(node.value), 'postOrder');
+
+// tree.traverseBFS((node) => console.log(node.value));
